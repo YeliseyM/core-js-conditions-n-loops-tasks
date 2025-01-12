@@ -215,8 +215,17 @@ function convertNumberToString(numberStr) {
  *  '0123210'   => true
  *  'qweqwe'    => false
  */
-function isPalindrome(/* str */) {
-  throw new Error('Not implemented');
+function isPalindrome(str) {
+  const helper = (start, end) => {
+    if (start >= end) {
+      return true;
+    }
+    if (str[start] !== str[end]) {
+      return false;
+    }
+    return helper(start + 1, end - 1);
+  };
+  return helper(0, str.length - 1);
 }
 
 /**
@@ -233,8 +242,17 @@ function isPalindrome(/* str */) {
  *  'qwerty', 'Q'     => -1
  *  'qwerty', 'p'     => -1
  */
-function getIndexOf(/* str, letter */) {
-  throw new Error('Not implemented');
+function getIndexOf(str, letter) {
+  const findIndex = (inputStr, targetLetter, currentIndex) => {
+    if (currentIndex >= inputStr.length) {
+      return -1;
+    }
+    if (inputStr[currentIndex] === targetLetter) {
+      return currentIndex;
+    }
+    return findIndex(inputStr, targetLetter, currentIndex + 1);
+  };
+  return findIndex(str, letter, 0);
 }
 
 /**
@@ -252,8 +270,21 @@ function getIndexOf(/* str, letter */) {
  *  12345, 0    => false
  *  12345, 6    => false
  */
-function isContainNumber(/* num, digit */) {
-  throw new Error('Not implemented');
+function isContainNumber(num, digit) {
+  const targetDigit = digit;
+  const helper = (n) => {
+    if (n === 0) {
+      return false;
+    }
+    if (n % 10 === targetDigit) {
+      return true;
+    }
+    return helper(Math.floor(n / 10));
+  };
+  if (num === 0 && targetDigit === 0) {
+    return true;
+  }
+  return helper(Math.abs(num));
 }
 
 /**
@@ -269,8 +300,19 @@ function isContainNumber(/* num, digit */) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  let totalSum = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    totalSum += arr[i];
+  }
+  let leftSum = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    if (leftSum === totalSum - leftSum - arr[i]) {
+      return i;
+    }
+    leftSum += arr[i];
+  }
+  return -1;
 }
 
 /**
@@ -294,8 +336,43 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  if (size <= 0) return [];
+  const matrix = new Array(size);
+  for (let i = 0; i < size; i += 1) {
+    matrix[i] = new Array(size);
+    for (let j = 0; j < size; j += 1) {
+      matrix[i][j] = 0;
+    }
+  }
+  let top = 0;
+  let bottom = size - 1;
+  let left = 0;
+  let right = size - 1;
+  let num = 1;
+  while (num <= size * size) {
+    for (let i = left; i <= right; i += 1) {
+      matrix[top][i] = num;
+      num += 1;
+    }
+    top += 1;
+    for (let i = top; i <= bottom; i += 1) {
+      matrix[i][right] = num;
+      num += 1;
+    }
+    right -= 1;
+    for (let i = right; i >= left; i -= 1) {
+      matrix[bottom][i] = num;
+      num += 1;
+    }
+    bottom -= 1;
+    for (let i = bottom; i >= top; i -= 1) {
+      matrix[i][left] = num;
+      num += 1;
+    }
+    left += 1;
+  }
+  return matrix;
 }
 
 /**
@@ -313,8 +390,24 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const newMatrix = matrix;
+  const n = newMatrix.length;
+
+  for (let i = 0; i < n; i += 1) {
+    for (let j = i + 1; j < n; j += 1) {
+      [newMatrix[i][j], newMatrix[j][i]] = [newMatrix[j][i], newMatrix[i][j]];
+    }
+  }
+
+  for (let i = 0; i < n; i += 1) {
+    for (let j = 0; j < Math.floor(n / 2); j += 1) {
+      [newMatrix[i][j], newMatrix[i][n - j - 1]] = [
+        newMatrix[i][n - j - 1],
+        newMatrix[i][j],
+      ];
+    }
+  }
 }
 
 /**
@@ -331,8 +424,23 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const sortedArr = arr;
+  const n = arr.length;
+
+  for (let i = 1; i < n; i += 1) {
+    const key = arr[i];
+    let j = i - 1;
+
+    while (j >= 0 && arr[j] > key) {
+      sortedArr[j + 1] = arr[j];
+      j -= 1;
+    }
+
+    sortedArr[j + 1] = key;
+  }
+
+  return sortedArr;
 }
 
 /**
@@ -352,8 +460,31 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let currentStr = str;
+  let remainingIterations = iterations;
+
+  while (remainingIterations > 0) {
+    let evenChars = '';
+    let oddChars = '';
+
+    for (let i = 0; i < currentStr.length; i += 1) {
+      if (i % 2 !== 0) {
+        oddChars += currentStr[i];
+      } else {
+        evenChars += currentStr[i];
+      }
+    }
+
+    currentStr = evenChars + oddChars;
+    remainingIterations -= 1;
+
+    if (currentStr === str) {
+      remainingIterations %= iterations - remainingIterations;
+    }
+  }
+
+  return currentStr;
 }
 
 /**
@@ -373,8 +504,29 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const digits = Array.from(String(number));
+  let currentIndex = digits.length - 1;
+  let swapIndex = digits.length - 1;
+
+  while (currentIndex > 0 && digits[currentIndex - 1] >= digits[currentIndex]) {
+    currentIndex -= 1;
+  }
+
+  if (currentIndex === 0) return number;
+
+  while (digits[swapIndex] <= digits[currentIndex - 1]) {
+    swapIndex -= 1;
+  }
+
+  const temp = digits[swapIndex];
+  digits[swapIndex] = digits[currentIndex - 1];
+  digits[currentIndex - 1] = temp;
+
+  const remainingDigits = digits.splice(currentIndex).sort();
+  const result = digits.join('') + remainingDigits.join('');
+
+  return Number(result);
 }
 
 module.exports = {
